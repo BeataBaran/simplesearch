@@ -51,7 +51,7 @@ class TextFileVisitorTest {
 
     @Test
     void visitNonTextFile() throws IOException {
-        File imageFile = new File(tempDir, "b.png");
+        File imageFile = new File(tempDir, "b.jpg");
 
         FileVisitResult result = visitor.visitFile(imageFile.toPath(), null);
 

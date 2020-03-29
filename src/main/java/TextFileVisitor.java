@@ -14,8 +14,11 @@ public class TextFileVisitor extends SimpleFileVisitor<Path> {
     }
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        if (Files.isRegularFile(file) && file.getFileName().toString().endsWith(".txt")) {
-            fileMap.put(file.getFileName().toString(), Files.readString(file));
+        if (Files.isRegularFile(file)) {
+            try {
+                fileMap.put(file.getFileName().toString(), Files.readString(file));
+            } catch (java.nio.charset.MalformedInputException ignored) {
+            }
         }
         return FileVisitResult.CONTINUE;
     }
