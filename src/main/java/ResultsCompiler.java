@@ -10,14 +10,11 @@ class ResultsCompiler {
     }
 
     static private SortedMap<String, Double> sortMapByValue(Map<String, Double> mapToSort) {
-        SortedMap<String, Double> sortedMap = new TreeMap<>((o1, o2) -> {
-            Double o1Value = mapToSort.get(o1);
-            Double o2Value = mapToSort.get(o2);
-            if (o2Value.compareTo(o1Value) != 0) {
-                return o2Value.compareTo(o1Value);
-            } else {
-                return o1.compareTo(o2);
-            }
+        SortedMap<String, Double> sortedMap = new TreeMap<>((fileName1, fileName2) -> {
+            Double fileRank1 = mapToSort.get(fileName1);
+            Double fileRank2 = mapToSort.get(fileName2);
+            int compareRankResult = fileRank2.compareTo(fileRank1);
+            return compareRankResult != 0 ? compareRankResult : fileName1.compareTo(fileName2);
         });
         sortedMap.putAll(mapToSort);
         return sortedMap;

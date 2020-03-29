@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class Searcher {
     private static final int NUMBER_OF_RESULTS = 10;
@@ -12,15 +11,11 @@ public class Searcher {
         Map<String, String> filesWithContent = loadFilesIntoMemory(args);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
-            System.out.print("search> ");
-            String input = br.readLine().trim();
-            if (input.equals(":quit")) {
-                System.exit(0);
-            }
-            if (input.equals("")) {
+            String input = handleCommandLine(br);
+            if (input == null) {
                 continue;
             }
-            Map<String, Double> searchResult = performSearch(filesWithContent, prepareSearchInput(input));
+            Map<String, Double> searchResult = SearchEngine.search(filesWithContent, input);
             Map<String, Double> topSearchResult = ResultsCompiler.getTopResults(NUMBER_OF_RESULTS, searchResult);
             printResults(topSearchResult);
         }
@@ -42,14 +37,13 @@ public class Searcher {
         return filesWithContent;
     }
 
-    private static String prepareSearchInput(String input) {
-        return input.replaceAll("[^\\w\\s]|_", "").replaceAll("\\s+", " ");
-    }
-
-    private static Map<String, Double> performSearch(Map<String, String> filesToSearch, String searchText) {
-        Map<String, Double> filesWithScore = new TreeMap<>();
-        filesToSearch.forEach((fileName, content) -> filesWithScore.put(fileName, RankEvaluator.getRank(content, searchText)));
-        return filesWithScore;
+    private static String handleCommandLine(BufferedReader br) throws IOException {
+        System.out.print("search> ");
+        String input = br.readLine().trim();
+        if (input.equals(":quit")) {
+            System.exit(0);
+        }
+        return input.equals("") ? null : input;
     }
 
     private static void printResults(Map<String, Double> searchResult) {
